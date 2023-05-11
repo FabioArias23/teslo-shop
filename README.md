@@ -13,5 +13,14 @@
 ```
 docker-compose up -d
 ```
-
+Archivo Post para testear la base de datos atravez de Postman 
+```
+{
+    "title":"Fabio DesarrolloBackend",
+    "sizes": ["M","V","P"],
+    "gender": "men",
+    "slug":"HolaMundo",
+    "price": 123
+}
+```
 6. Levantar: ```yarn start:dev```
