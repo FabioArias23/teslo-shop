@@ -11,6 +11,7 @@
 4. Cambiar las variables de entorno
 5. Levantar la base de datos
 ```
+Correr Docker 
 docker-compose up -d
 ```
 Archivo Post para testear la base de datos atravez de Postman 
