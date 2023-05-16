@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundError } from 'rxjs';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
-import { query } from 'express';
+
+import { ProductImage,Product } from './entities';
 @Injectable()
 export class ProductsService {
      
@@ -17,27 +17,23 @@ export class ProductsService {
 
       @InjectRepository(Product)
       private readonly productRepository: Repository<Product>,
-
+      @InjectRepository(ProductImage)
+      private readonly productImageRepository: Repository<ProductImage>,
     ) {}
 
 
    async create(createProductDto: CreateProductDto) {
     
     try{
-      /* if(!createProductDto.slug){
-        createProductDto.slug = createProductDto.title
-        .toLowerCase()
-        .replaceAll(' ','')
-        .replaceAll("'",'')
-      }else{
-        createProductDto.slug = createProductDto.title
-        .toLowerCase()
-        .replaceAll('','')
-        .replaceAll("'",'')
-      } */
 
 
-      const product = this.productRepository.create(createProductDto)
+      
+      const { images = [], ...productDetails} = createProductDto;
+
+      const product = this.productRepository.create({
+        ...productDetails,
+      images: images.map( image => this.productImageRepository.create({url:image}))
+    })
       await this.productRepository.save(product);
       return product 
 
@@ -88,7 +84,8 @@ export class ProductsService {
 
     const product = await this.productRepository.preload({
       id: id,
-      ...updateProductDto
+      ...updateProductDto,
+      images:[]
     })
     
     if( !product ) throw new NotFoundException(`Product ${id}  not found`)
