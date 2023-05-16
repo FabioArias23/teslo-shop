@@ -3,7 +3,6 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NotFoundError } from 'rxjs';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 
@@ -28,18 +27,17 @@ export class ProductsService {
 
 
       
-      const { images = [], ...productDetails} = createProductDto;
+      const {images = [], ...productDetails} = createProductDto;
 
-      const product = this.productRepository.create({
+      const product = this.productRepository.create({ 
         ...productDetails,
-      images: images.map( image => this.productImageRepository.create({url:image}))
-    })
-      await this.productRepository.save(product);
-      return product 
+      images: images.map( image => this.productImageRepository.create({url: image}))
+     })
+     await this.productRepository.save(product)
+     return {...product, images}
+      }catch(error){
 
-    }catch(error){
-
-     
+        this.handleExceptions(error);
     }
    
 
