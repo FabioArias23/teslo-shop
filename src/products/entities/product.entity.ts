@@ -50,7 +50,8 @@ export class Product{
         ()=> ProductImage,
         //callbacks
         (productImage) => productImage.product,
-        {cascade:true}
+       //cada vez que un metodo use find automaticamente va a cargar las imagenes  del producto
+        {cascade:true, eager:true}
     )
     images?: ProductImage[]
 
