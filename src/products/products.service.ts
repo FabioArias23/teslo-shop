@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 
@@ -18,6 +18,8 @@ export class ProductsService {
       private readonly productRepository: Repository<Product>,
       @InjectRepository(ProductImage)
       private readonly productImageRepository: Repository<ProductImage>,
+      //actualizo data source desde typeorm para saber que base de datos uso y puedo usar para crear mi query runner
+      private readonly dataSource: DataSource,
     ) {}
 
 
@@ -92,7 +94,7 @@ export class ProductsService {
       if(!product) throw new NotFoundException(`Product  with id ${term} not found`)
     return product;
   }
-  //
+  //uso plain para aplanar las imagenes y arreglar la busqueda
   async findONePlain( term: string){
     const {images = [], ...rest} = await this.findOne(term)
    return {
@@ -105,14 +107,20 @@ export class ProductsService {
 
  async  update(id: string, updateProductDto: UpdateProductDto) {
 
+  const {images, ...toUpdate} = updateProductDto;
+    //data que va actualizar sin las imagenes porque las imagenes las trabajo de una manera independiente
     const product = await this.productRepository.preload({
-      id: id,
-      ...updateProductDto,
-      images:[]
+      id, ...toUpdate
     })
-    
+  //ahora si no existe el producto  
     if( !product ) throw new NotFoundException(`Product ${id}  not found`)
-    
+    //si tenemos un producto con imagenes
+    //Create query runner
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    //empezamos a definir una serie de procedimientos
+
+
     try {
       await this.productRepository.save(product)
       
