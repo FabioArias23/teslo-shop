@@ -118,16 +118,42 @@ export class ProductsService {
     //Create query runner
     const queryRunner = this.dataSource.createQueryRunner();
 
+    //transacciones
+
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+
     //empezamos a definir una serie de procedimientos
 
 
     try {
-      await this.productRepository.save(product)
+
+      if(images ){
+
+        await queryRunner.manager.delete(ProductImage, {product: {id}});
+        //insertando el url
+        product.images = images.map( 
+          image => this.productImageRepository.create({url:image})
+          )
+      }else{
+        //??
+        // product.images  ??? 
+      }
+        //si usamos manager no  estamos impactando a la base de datos directa para manejar la peticion
+      await queryRunner.manager.save(product);
+      //await this.productRepository.save(product);
+
+      await queryRunner.commitTransaction()
+      await queryRunner.release()
       
-      return product;
+      return this.findONePlain(id)
       
     } catch (error) {
-      this.handleExceptions(error);
+      
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release()
+
+      this.handleExceptions(error); 
     }
    
 
