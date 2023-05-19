@@ -147,7 +147,7 @@ export class ProductsService {
       await queryRunner.release()
       
       return this.findONePlain(id)
-      
+       
     } catch (error) {
       
       await queryRunner.rollbackTransaction();
@@ -177,4 +177,18 @@ export class ProductsService {
     throw new InternalServerErrorException('Unexpected error: check server logs')
 
   }
-}
+ //aca creo un delete de todos los productos
+ //es para trabajar mi seed, no usarlo en produccion 
+  async deleteAllProducts(){
+    const query = this.productRepository.createQueryBuilder('product');
+    try{
+      return await query
+      .delete()
+      .where({})
+      .execute();
+    }catch(error){
+      this.handleExceptions(error)
+    }
+  }
+
+ }
