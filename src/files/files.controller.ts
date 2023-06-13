@@ -26,7 +26,7 @@ export class FilesController {
 //creamos producto y almacenamos en disk
  @Post('product')
  //ponemos aqui que el fileFitler es igual a filFilter y mandamos la referencia a la funcion
- @UseInterceptors(FileInterceptor('file',{ 
+ @UseInterceptors( FileInterceptor('file',{ 
   fileFilter:fileFilter,
   //aca nombramos donde queremos almacenar esta imagen en filesystem o en el storage que esten definiendo
   storage: diskStorage({
