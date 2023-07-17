@@ -3,12 +3,17 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { Auth } from 'src/auth/decorators';
+import { ValidRoles } from 'src/auth/interfaces';
+
+// si yo dejo el decorador debe estar autenticado para usar cualquiera de estas rutas 
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Auth( ValidRoles.admin)
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
@@ -18,13 +23,14 @@ export class ProductsController {
    console.log(paginationDto)
     return this.productsService.findAll(paginationDto);
   }
-
+ 
   @Get(':term')
   findOne(@Param('term', ) term: string) {
     return this.productsService.findONePlain(term);
   }
 
   @Patch(':id')
+  @Auth( ValidRoles.admin)
   update(@Param('id',ParseUUIDPipe) id: string, 
         @Body() updateProductDto: UpdateProductDto) {
     
@@ -33,6 +39,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Auth( ValidRoles.admin)
   remove(@Param('id',ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
