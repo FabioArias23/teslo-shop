@@ -7,6 +7,7 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 
 import { ProductImage,Product } from './entities';
+import { User } from 'src/auth/entities/users.entity';
 @Injectable()
 export class ProductsService {
      
@@ -23,7 +24,7 @@ export class ProductsService {
     ) {}
 
 
-   async create(createProductDto: CreateProductDto) {
+   async create(createProductDto: CreateProductDto, user:User) {
     
     try{
 
@@ -33,6 +34,7 @@ export class ProductsService {
 
       const product = this.productRepository.create({ 
         ...productDetails,
+        user,
       images: images.map( image => this.productImageRepository.create({url: image}))
      })
      await this.productRepository.save(product)
@@ -105,7 +107,7 @@ export class ProductsService {
 
 
 
- async  update(id: string, updateProductDto: UpdateProductDto) {
+ async  update(id: string, updateProductDto: UpdateProductDto, user:User) {
 
   const {images, ...toUpdate} = updateProductDto;
     //data que va actualizar sin las imagenes porque las imagenes las trabajo de una manera independiente
@@ -135,10 +137,10 @@ export class ProductsService {
         product.images = images.map( 
           image => this.productImageRepository.create({url:image})
           )
-      }else{
-        //??
-        // product.images  ??? 
       }
+
+      product.user = user;
+
         //si usamos manager no  estamos impactando a la base de datos directa para manejar la peticion
       await queryRunner.manager.save(product);
       //await this.productRepository.save(product);

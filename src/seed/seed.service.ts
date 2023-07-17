@@ -27,9 +27,9 @@ const product = initialData.products;
 
 //creo varios inserts que se hacen de manera automatica
 const insertPromises = [];
-product.forEach(product => {
- insertPromises.push(this.productsService.create(product))
-});
+// product.forEach(product => {
+//  insertPromises.push(this.productsService.create(product))
+// });
 
 await Promise.all(insertPromises)
 
