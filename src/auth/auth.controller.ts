@@ -9,7 +9,9 @@ import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
 import { ValidRoles } from './interfaces';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -57,7 +59,7 @@ export class AuthController {
    //@SetMetadata('roles', ['admin','super-user'])
   //usamos el roleprocted decorator para no usar el @Setmetadata
   @Get('private3')
-  @Auth(ValidRoles.admin)
+  @RoleProtected(ValidRoles.admin)
   @UseGuards(AuthGuard(),UserRoleGuard)
   privateRoute3(
     

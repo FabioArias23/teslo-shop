@@ -6,8 +6,10 @@ import { Response } from 'express'
 import { diskStorage } from 'multer';
 import { fileNamer,fileFilter } from './helpers';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 
 //controlador de archivos, definimos un metodo post usamos el useinterceptors y nombramos con decorador @UploadedFile lo importamos desde nestjs/common
+@ApiTags('Files')
 @Controller('files')
 export class FilesController {
  constructor (
