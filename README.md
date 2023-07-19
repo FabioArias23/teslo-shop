@@ -23,3 +23,7 @@ Archivo Post para testear la base de datos atravez de Postman
 ```
 http://localhost:3000/api/seed
 ```
+8.Documentacion de la API en Postman:
+```
+https://documenter.getpostman.com/view/13065994/2s946icrBb
+```
