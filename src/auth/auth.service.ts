@@ -70,16 +70,25 @@ export class AuthService {
  return {
   ...user,
   token: this.getJwtToken({id:user.id})
-};
+  };
  //TODO: retornar el JWT
   }
+ 
+  async checkAuthStatus( user:User){
+
+    return {
+      ...user,
+      token: this.getJwtToken({id:user.id})
+      };
+  }
+
 
   private getJwtToken(payload:JwtPayload){
     const token = this.jwtService.sign(payload)
     return token
   }
 
- private handleDBErrors(error: any): never {
+  private handleDBErrors(error: any): never {
   if (error.code === '23505')
   throw new BadRequestException(error.detail);
   console.log(error)
