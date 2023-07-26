@@ -29,8 +29,8 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
       }),
 
       ServeStaticModule.forRoot({
-        rootPath: join(__dirname,'..','public'),
-        }),
+        rootPath: join(__dirname,'..','public'), 
+      }),
       ProductsModule,
   
       CommonModule,
